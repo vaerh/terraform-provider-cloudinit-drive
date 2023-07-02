@@ -1,0 +1,5 @@
+growpart {
+  mode                     = "growpart"
+  devices                  = ["/", "/dev/vdb1"]
+  ignore_growroot_disabled = true
+}

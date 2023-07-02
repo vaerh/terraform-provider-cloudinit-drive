@@ -1,0 +1,50 @@
+# Write out base64 encoded content to /etc/sysconfig/selinux
+write_files:
+- encoding: b64
+  content: CiMgVGhpcyBmaWxlIGNvbnRyb2xzIHRoZSBzdGF0ZSBvZiBTRUxpbnV4...
+  owner: root:root
+  path: /etc/sysconfig/selinux
+  permissions: '0644'
+
+# --- Example2 ---
+# Appending content to an existing file
+- content: |
+    15 * * * * root ship_logs
+  path: /etc/crontab
+  append: true
+
+# --- Example3 ---
+#   Provide gziped binary content
+- encoding: gzip
+  content: !!binary H4sIAIDb/U8C/1NW1E/KzNMvzuBKTc7IV8hIzcnJVyjPL8pJ4QIA6N+MVxsAAAA=
+  path: /usr/bin/hello
+  permissions: '0755'
+
+# --- Example4 ---
+# Create an empty file on the system
+- path: /root/CLOUD_INIT_WAS_HERE
+
+# --- Example5 ---
+# Defer writing the file until after the package (Nginx) is
+# installed and its user is created alongside
+- path: /etc/nginx/conf.d/example.com.conf
+  content: |
+    server {
+        server_name example.com;
+        listen 80;
+        root /var/www;
+        location / {
+            try_files $uri $uri/ $uri.html =404;
+        }
+    }
+  owner: 'nginx:nginx'
+  permissions: '0640'
+  defer: true
+
+- path: /tmp/write_files.tf
+  content: |-
+    H4sIAAAAAAAC/0SMwUrDQBCG73mKIQ+QFFl6ELysYOxBD6lWyCV0t9N0IJ0JO2u7ifjusq
+    L08h/+7+O7BorYH2lEha8CANnLgXgAAHiA0q1NWQB44Ygc4e99pJdh15wmP9vz/iONm+b1
+    4rid3V1aNs+tdFu7HJqnVbe1l47sW/ueJsc7U1VVrsmVMQD814JIvM+T2bSPJ7ixGqOvdV
+    YvfKShVhyJP9OviOFMqiSsWdQY+n61NqYsvoufAAAA//9hsXAO1QAA
+  encoding: gz+b64

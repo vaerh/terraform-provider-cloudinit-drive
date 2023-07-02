@@ -1,0 +1,8 @@
+packages = [
+  "pwgen",
+  "pastebinit",
+  "[libpython3.8, 3.8.10-0ubuntu1~20.04.2]"
+]
+package_update             = true
+package_upgrade            = true
+package_reboot_if_required = true

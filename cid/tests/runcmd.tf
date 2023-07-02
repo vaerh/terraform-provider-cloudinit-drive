@@ -1,0 +1,6 @@
+runcmd = [
+  "ls -l /",
+  "sh -c echo \"=========hello world'=========\"",
+  "ls -l /root",
+  "wget \"http://example.org\" -O /tmp/index.html"
+]

@@ -1,0 +1,5 @@
+# preserve_hostname: true
+# --- Example2 ---
+hostname: myhost
+fqdn: myhost.example.com
+prefer_fqdn_over_hostname: true
