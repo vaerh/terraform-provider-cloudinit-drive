@@ -28,13 +28,13 @@ jobs:
         uses: cycjimmy/semantic-release-action@v3
         with:
           extra_plugins: |
-            "@semantic-release/changelog@6.0.2"
-            "@semantic-release/commit-analyzer@9.0.2"
-            "@semantic-release/exec@6.0.3"
-            "@semantic-release/git@10.0.1"
-            "@semantic-release/github@8.0.7"
-            "@semantic-release/release-notes-generator@10.0.3"
-            "conventional-changelog-conventionalcommits@5.0.0"
+            "@semantic-release/changelog"
+            "@semantic-release/commit-analyzer"
+            "@semantic-release/exec"
+            "@semantic-release/git"
+            "@semantic-release/github"
+            "@semantic-release/release-notes-generator"
+            "conventional-changelog-conventionalcommits"
 
       - name: Set up Go
         if: steps.release.outputs.new_release_published == 'true'
@@ -49,4 +49,4 @@ jobs:
           version: latest
           args: release --clean
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.CID_ACTIONS }}
