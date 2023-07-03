@@ -1,0 +1,19 @@
+{
+    "name": "terraform-provider-cloudinit-drive",
+    "version": "1.0.0",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/vaerh/terraform-provider-cloudinit-drive"
+    },
+    "dependencies": {
+        "@semantic-release/changelog": "^6.0.3",
+        "@semantic-release/commit-analyzer": "^10.0.1",
+        "@semantic-release/exec": "^6.0.3",
+        "@semantic-release/git": "^10.0.1",
+        "@semantic-release/github": "^9.0.0",
+        "conventional-changelog-conventionalcommits": "^5.0.2"
+    },
+    "devDependencies": {
+        "semantic-release": "21.0.6"
+    }
+}
