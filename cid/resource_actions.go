@@ -37,7 +37,10 @@ func (r *cloudInitDriveResource) Read(ctx context.Context, req resource.ReadRequ
 	}
 
 	if strings.HasPrefix(state.DrivePath.ValueString(), "ssh://") {
-		r.client.Connect()
+		resp.Diagnostics.Append(r.client.Connect())
+		if resp.Diagnostics.HasError() {
+			return
+		}
 		defer r.client.Close()
 	}
 
@@ -108,7 +111,10 @@ func (r *cloudInitDriveResource) Delete(ctx context.Context, req resource.Delete
 
 	switch {
 	case strings.HasPrefix(state.DrivePath.ValueString(), "ssh://"):
-		r.client.Connect()
+		resp.Diagnostics.Append(r.client.Connect())
+		if resp.Diagnostics.HasError() {
+			return
+		}
 		defer r.client.Close()
 
 		err = r.client.scp.Remove(isoFile[6:])
