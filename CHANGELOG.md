@@ -1,3 +1,10 @@
+## [1.0.3](https://github.com/vaerh/terraform-provider-cloudinit-drive/compare/v1.0.2...v1.0.3) (2023-07-21)
+
+
+### Bug Fixes
+
+* Image size ([#17](https://github.com/vaerh/terraform-provider-cloudinit-drive/issues/17)) ([de0d390](https://github.com/vaerh/terraform-provider-cloudinit-drive/commit/de0d39045d47f775c2fee0948606afe6417495b2))
+
 ## [1.0.2](https://github.com/vaerh/terraform-provider-cloudinit-drive/compare/v1.0.1...v1.0.2) (2023-07-21)
 
 

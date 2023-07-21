@@ -116,6 +116,7 @@ resource "cloudinit_drive" "vm-104-cloudinit" {
 
 - `checksum` (String) SHA256 checksum of the generated ISO image.
 - `id` (String) Unique identifier for this resource: hexadecimal representation of the SHA1 checksum of the resource.
+- `size` (String) Cloud-init disk image size.
 
 <a id="nestedblock--ca_certs"></a>
 ### Nested Schema for `ca_certs`
