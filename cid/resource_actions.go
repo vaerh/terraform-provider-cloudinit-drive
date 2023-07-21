@@ -237,8 +237,9 @@ func (r *cloudInitDriveResource) ReadCloudInitDrive(ctx context.Context, stateDa
 	}
 
 	if !stateData.Checksum.Equal(types.StringValue(hex.EncodeToString(hash.Sum(nil)))) {
-		diags.AddAttributeWarning(path.Root("checksum"), "The checksum of the ISO image has changed.",
-			"The checksum of the ISO file does not match the state value. The 'iso' file will be re-created.")
+		// diags.AddAttributeWarning(path.Root("checksum"), "The checksum of the ISO image has changed.",
+		// 	"The checksum of the ISO file does not match the state value. The 'iso' file will be re-created.")
+		tflog.Info(ctx, "The checksum of the ISO file does not match the state value. The 'iso' file will be re-created.")
 		return
 	}
 
