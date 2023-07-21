@@ -71,6 +71,11 @@ func (r *cloudInitDriveResource) Schema(_ context.Context, _ resource.SchemaRequ
 			"drive_name": schema.StringAttribute{
 				Required:            true,
 				MarkdownDescription: "Name of the cloud-init drive.",
+				Validators: []validator.String{
+					stringvalidator.RegexMatches(
+						regexp.MustCompile(`cloudinit`),
+						"the disk name must not contain the word 'cloudinit' or the VM startup error will occur",
+					)},
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
 				},
