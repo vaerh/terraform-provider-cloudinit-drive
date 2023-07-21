@@ -79,6 +79,10 @@ func (r *cloudInitDriveResource) Schema(_ context.Context, _ resource.SchemaRequ
 				Computed:            true,
 				MarkdownDescription: "SHA256 checksum of the generated ISO image.",
 			},
+			"size": schema.StringAttribute{
+				Computed:            true,
+				MarkdownDescription: "Cloud-init disk image size.",
+			},
 			// --- Metadata ---
 			"instance_id": schema.StringAttribute{ // Metadata: uuid, instance-id
 				Computed:            true,
