@@ -50,7 +50,7 @@ resource "proxmox_vm_qemu" "test-vm" {
   disk {
     type    = "ide"
     media   = "cdrom"
-    size    = "44K"
+    size    = cloudinit-drive.vm-test-cloudinit.size
     storage = "Storage"
     file    = "${var.vm_id}/${cloudinit-drive.vm-test-cloudinit.drive_name}"
     #    slot = 2
