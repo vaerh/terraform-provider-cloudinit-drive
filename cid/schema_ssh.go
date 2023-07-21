@@ -57,7 +57,7 @@ var SshGenKeyTypes = schema.ListAttribute{
 	Default: listdefault.StaticValue(types.ListValueMust(
 		types.StringType,
 		[]attr.Value{
-			types.StringValue("rsd"),
+			types.StringValue("rsa"),
 			types.StringValue("dsa"),
 			types.StringValue("ecdsa"),
 			types.StringValue("ed25519"),
