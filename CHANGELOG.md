@@ -1,3 +1,11 @@
+## [1.0.2](https://github.com/vaerh/terraform-provider-cloudinit-drive/compare/v1.0.1...v1.0.2) (2023-07-21)
+
+
+### Bug Fixes
+
+* Disk name restrictions ([#16](https://github.com/vaerh/terraform-provider-cloudinit-drive/issues/16)) ([39c1701](https://github.com/vaerh/terraform-provider-cloudinit-drive/commit/39c17010642366b3889061518778ec216b908744))
+* RSA key name typo ([#15](https://github.com/vaerh/terraform-provider-cloudinit-drive/issues/15)) ([fa58df5](https://github.com/vaerh/terraform-provider-cloudinit-drive/commit/fa58df553a82eed89507c880c9f707f314f80554)), closes [#12](https://github.com/vaerh/terraform-provider-cloudinit-drive/issues/12)
+
 ## [1.0.1](https://github.com/vaerh/terraform-provider-cloudinit-drive/compare/v1.0.0...v1.0.1) (2023-07-19)
 
 
