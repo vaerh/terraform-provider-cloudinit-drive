@@ -245,11 +245,11 @@ func (r *cloudInitDriveResource) ReadCloudInitDrive(ctx context.Context, stateDa
 	return
 }
 
-func (r *cloudInitDriveResource) CreateCloudInitDrive(ctx context.Context, resurcePlan *cloudInitDriveResourceModel) (diags diag.Diagnostics) {
+func (r *cloudInitDriveResource) CreateCloudInitDrive(ctx context.Context, resourcePlan *cloudInitDriveResourceModel) (diags diag.Diagnostics) {
 	var files = make(map[string]string)
 	var cdLabel = "unknown"
 
-	if strings.HasPrefix(resurcePlan.DrivePath.ValueString(), "ssh://") {
+	if strings.HasPrefix(resourcePlan.DrivePath.ValueString(), "ssh://") {
 		diags.Append(r.client.Connect())
 		if diags.HasError() {
 			return
@@ -258,7 +258,7 @@ func (r *cloudInitDriveResource) CreateCloudInitDrive(ctx context.Context, resur
 	}
 
 	// The attribute is mandatory and always defined.
-	switch ParseCiDriveType(resurcePlan.DriveType.ValueString()) {
+	switch ParseCiDriveType(resourcePlan.DriveType.ValueString()) {
 	case ConfigDrive2:
 		cdLabel = "config-2"
 		files["meta-data"] = "/openstack/latest/meta-data.json"
@@ -290,8 +290,8 @@ func (r *cloudInitDriveResource) CreateCloudInitDrive(ctx context.Context, resur
 	// ----- Metadata -----
 	var md attr.Value
 
-	if resurcePlan.CustomFiles != nil {
-		md = resurcePlan.CustomFiles.MetaData
+	if resourcePlan.CustomFiles != nil {
+		md = resourcePlan.CustomFiles.MetaData
 	}
 
 	if fileName, ok := GetAttribute(md); ok {
@@ -310,7 +310,7 @@ func (r *cloudInitDriveResource) CreateCloudInitDrive(ctx context.Context, resur
 		file.Close()
 	} else {
 
-		metadata, d := MakeMetadata(ctx, resurcePlan)
+		metadata, d := MakeMetadata(ctx, resourcePlan)
 		diags.Append(d...)
 		if diags.HasError() {
 			return
@@ -322,8 +322,8 @@ func (r *cloudInitDriveResource) CreateCloudInitDrive(ctx context.Context, resur
 	// ----- User data -----
 	var ud attr.Value
 
-	if resurcePlan.CustomFiles != nil {
-		ud = resurcePlan.CustomFiles.UserData
+	if resourcePlan.CustomFiles != nil {
+		ud = resourcePlan.CustomFiles.UserData
 	}
 
 	if fileName, ok := GetAttribute(ud); ok {
@@ -342,7 +342,7 @@ func (r *cloudInitDriveResource) CreateCloudInitDrive(ctx context.Context, resur
 		file.Close()
 	} else {
 
-		userData, d := MakeUserdata(ctx, resurcePlan)
+		userData, d := MakeUserdata(ctx, resourcePlan)
 		diags.Append(d...)
 		if diags.HasError() {
 			return
@@ -354,8 +354,8 @@ func (r *cloudInitDriveResource) CreateCloudInitDrive(ctx context.Context, resur
 	// ----- Network data -----
 	var nd attr.Value
 
-	if resurcePlan.CustomFiles != nil {
-		nd = resurcePlan.CustomFiles.NetworkData
+	if resourcePlan.CustomFiles != nil {
+		nd = resourcePlan.CustomFiles.NetworkData
 	}
 
 	if fileName, ok := GetAttribute(nd); ok {
@@ -374,7 +374,7 @@ func (r *cloudInitDriveResource) CreateCloudInitDrive(ctx context.Context, resur
 		file.Close()
 	} else {
 
-		netConfig, d := MakeNetConfig(ctx, resurcePlan)
+		netConfig, d := MakeNetConfig(ctx, resourcePlan)
 		diags.Append(d...)
 		if diags.HasError() {
 			return
@@ -386,8 +386,8 @@ func (r *cloudInitDriveResource) CreateCloudInitDrive(ctx context.Context, resur
 	// ----- Vendor data -----
 	var vd attr.Value
 
-	if resurcePlan.CustomFiles != nil {
-		vd = resurcePlan.CustomFiles.VendorData
+	if resourcePlan.CustomFiles != nil {
+		vd = resourcePlan.CustomFiles.VendorData
 	}
 
 	if fileName, ok := GetAttribute(vd); ok {
@@ -404,14 +404,14 @@ func (r *cloudInitDriveResource) CreateCloudInitDrive(ctx context.Context, resur
 	}
 
 	// ----- Custom files -----
-	diags.Append(AddCustomFiles(resurcePlan, iso)...)
+	diags.Append(AddCustomFiles(resourcePlan, iso)...)
 	if diags.HasError() {
 		return
 	}
 
 	// ----- Make ISO file -----
 
-	isoFile, err := url.JoinPath(resurcePlan.DrivePath.ValueString(), resurcePlan.DriveName.ValueString())
+	isoFile, err := url.JoinPath(resourcePlan.DrivePath.ValueString(), resourcePlan.DriveName.ValueString())
 	if err != nil {
 		diags.AddAttributeError(path.Empty(), err.Error(), "Error parsing the file path url")
 		return
@@ -428,7 +428,8 @@ func (r *cloudInitDriveResource) CreateCloudInitDrive(ctx context.Context, resur
 
 	hash := sha256.New()
 	hashSha1 := sha1.New()
-	w := io.MultiWriter(img, hash, hashSha1)
+	buf := new(bytes.Buffer)
+	w := io.MultiWriter(img, hash, hashSha1, buf)
 
 	err = iso.WriteTo(w, cdLabel)
 	if err != nil {
@@ -436,14 +437,21 @@ func (r *cloudInitDriveResource) CreateCloudInitDrive(ctx context.Context, resur
 		return
 	}
 
-	resurcePlan.Checksum = types.StringValue(hex.EncodeToString(hash.Sum(nil)))
-	resurcePlan.ID = types.StringValue(hex.EncodeToString(hashSha1.Sum(nil)))
+	resourcePlan.Checksum = types.StringValue(hex.EncodeToString(hash.Sum(nil)))
+	resourcePlan.ID = types.StringValue(hex.EncodeToString(hashSha1.Sum(nil)))
+
+	// Disk image size
+	resourcePlan.Size = types.StringValue(fmt.Sprintf("%.0fK", float64(buf.Len()) / 1024.0))
+	if float64(buf.Len()) / (1<<20) > 4 {
+		diags.AddWarning("Cloud-init drive size greater than 4 megabytes.", 
+		"The standard drive generated by Proxmox VE should not exceed 4 megabytes.")
+	}
 
 	return
 }
 
-func AddCustomFiles(resurcePlan *cloudInitDriveResourceModel, iso *iso9660.ImageWriter) diag.Diagnostics {
-	if resurcePlan.CustomFiles == nil {
+func AddCustomFiles(resourcePlan *cloudInitDriveResourceModel, iso *iso9660.ImageWriter) diag.Diagnostics {
+	if resourcePlan.CustomFiles == nil {
 		return nil
 	}
 
@@ -455,9 +463,9 @@ func AddCustomFiles(resurcePlan *cloudInitDriveResourceModel, iso *iso9660.Image
 		errDescr string
 		dstPath  string
 	}{
-		{resurcePlan.CustomFiles.ScriptsPerBoot, "scripts_per_boot", "script", "/scripts/per-boot/"},
-		{resurcePlan.CustomFiles.ScriptsPerInstance, "scripts_per_instance", "script", "/scripts/per-instance/"},
-		{resurcePlan.CustomFiles.ScriptsPerOnce, "scripts_per_once", "script", "/scripts/per-once/"},
+		{resourcePlan.CustomFiles.ScriptsPerBoot, "scripts_per_boot", "script", "/scripts/per-boot/"},
+		{resourcePlan.CustomFiles.ScriptsPerInstance, "scripts_per_instance", "script", "/scripts/per-instance/"},
+		{resourcePlan.CustomFiles.ScriptsPerOnce, "scripts_per_once", "script", "/scripts/per-once/"},
 	} {
 		for i, fileName := range scripts.files.Elements() {
 			if fileName.IsNull() || fileName.IsUnknown() {
@@ -476,7 +484,7 @@ func AddCustomFiles(resurcePlan *cloudInitDriveResourceModel, iso *iso9660.Image
 		}
 	}
 
-	for i, file := range resurcePlan.CustomFiles.Files {
+	for i, file := range resourcePlan.CustomFiles.Files {
 		if file.Src.IsNull() || file.Dst.IsNull() || file.Src.IsUnknown() || file.Dst.IsUnknown() {
 			continue
 		}
