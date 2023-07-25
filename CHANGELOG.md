@@ -1,3 +1,10 @@
+## [1.1.0](https://github.com/vaerh/terraform-provider-cloudinit-drive/compare/v1.0.4...v1.1.0) (2023-07-25)
+
+
+### Features
+
+* MAC address generation ([b95eef7](https://github.com/vaerh/terraform-provider-cloudinit-drive/commit/b95eef75dfb195ac3ce8fd0207a1478372f352ff))
+
 ## [1.0.4](https://github.com/vaerh/terraform-provider-cloudinit-drive/compare/v1.0.3...v1.0.4) (2023-07-21)
 
 
