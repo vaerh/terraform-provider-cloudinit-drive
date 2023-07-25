@@ -153,6 +153,7 @@ func (p *CloudInitDriveProvider) Configure(ctx context.Context, req provider.Con
 func (p *CloudInitDriveProvider) Resources(ctx context.Context) []func() resource.Resource {
 	return []func() resource.Resource{
 		NewCloudInitDriveResource,
+		NewMacAddressResource,
 	}
 }
 
