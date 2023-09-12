@@ -7,7 +7,7 @@ require (
 	github.com/fatih/color v1.15.0
 	github.com/goccy/go-yaml v1.11.0
 	github.com/hashicorp/terraform-plugin-docs v0.16.0
-	github.com/hashicorp/terraform-plugin-framework v1.3.5
+	github.com/hashicorp/terraform-plugin-framework v1.4.0
 	github.com/hashicorp/terraform-plugin-framework-validators v0.11.0
 	github.com/hashicorp/terraform-plugin-log v0.9.0
 	golang.org/x/crypto v0.13.0
