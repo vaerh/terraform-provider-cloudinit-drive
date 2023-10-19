@@ -15,7 +15,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
-	"github.com/kdomanski/iso9660"
+	"github.com/vaerh/iso9660"
 )
 
 func LoadEnvVariable(v any, env string) any {
@@ -115,7 +115,7 @@ func DriveOpen(c *SSHClient, uri string, rw bool) (UniversalFile, error) {
 				}
 			}
 
-			return os.OpenFile(uri[7:], os.O_CREATE|os.O_RDWR|os.O_TRUNC, os.ModePerm)
+			return os.OpenFile(uri[7:], os.O_CREATE|os.O_RDWR|os.O_TRUNC, 0644)
 		}
 
 		if _, err := os.Stat(uri[7:]); err != nil {

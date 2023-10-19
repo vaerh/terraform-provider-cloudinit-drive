@@ -22,7 +22,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
-	"github.com/kdomanski/iso9660"
+	"github.com/vaerh/iso9660"
 )
 
 func (r *cloudInitDriveResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
@@ -286,7 +286,6 @@ func (r *cloudInitDriveResource) CreateCloudInitDrive(ctx context.Context, resou
 		diags.AddAttributeError(path.Empty(), err.Error(), "Error creating 'iso' file.")
 		return
 	}
-	defer iso.Cleanup()
 
 	// ----- Metadata -----
 	var md attr.Value
@@ -432,7 +431,8 @@ func (r *cloudInitDriveResource) CreateCloudInitDrive(ctx context.Context, resou
 	buf := new(bytes.Buffer)
 	w := io.MultiWriter(img, hash, hashSha1, buf)
 
-	err = iso.WriteTo(w, cdLabel)
+	iso.Primary.VolumeIdentifier = cdLabel
+	err = iso.WriteTo(w)
 	if err != nil {
 		diags.AddAttributeError(path.Empty(), err.Error(), "Error writing 'iso' file.")
 		return
@@ -450,8 +450,8 @@ func (r *cloudInitDriveResource) CreateCloudInitDrive(ctx context.Context, resou
 
 	// Cloud-init drive name
 	if strings.Contains(resourcePlan.DriveName.ValueString(), "cloudinit") {
-		diags.AddAttributeWarning(path.Root("drive_name"), "incorrect drive name", 
-		"If you are using Proxmox VE, the drive name must not contain the word 'cloudinit' or the VM startup error will occur.")
+		diags.AddAttributeWarning(path.Root("drive_name"), "incorrect drive name",
+			"If you are using Proxmox VE, the drive name must not contain the word 'cloudinit' or the VM startup error will occur.")
 	}
 
 	return
