@@ -1,3 +1,10 @@
+## [1.1.1](https://github.com/vaerh/terraform-provider-cloudinit-drive/compare/v1.1.0...v1.1.1) (2023-10-19)
+
+
+### Bug Fixes
+
+* ISO disk is not readable under Windows ([7e6d52c](https://github.com/vaerh/terraform-provider-cloudinit-drive/commit/7e6d52c2ecdf6c5542aca6a095b99ab788ad3742))
+
 ## [1.1.0](https://github.com/vaerh/terraform-provider-cloudinit-drive/compare/v1.0.4...v1.1.0) (2023-07-25)
 
 
