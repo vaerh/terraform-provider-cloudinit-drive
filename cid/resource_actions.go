@@ -487,7 +487,7 @@ func AddCustomFiles(resourcePlan *cloudInitDriveResourceModel, iso *iso9660.Imag
 			}
 
 			iso.AddFile(file, scripts.dstPath+ospath.Base(fileName.(basetypes.StringValue).ValueString()))
-			file.Close()
+			// file.Close()
 		}
 	}
 
@@ -504,7 +504,7 @@ func AddCustomFiles(resourcePlan *cloudInitDriveResourceModel, iso *iso9660.Imag
 		}
 
 		iso.AddFile(f, file.Dst.ValueString())
-		f.Close()
+		// f.Close()
 	}
 
 	return diags
