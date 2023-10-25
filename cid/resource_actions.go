@@ -307,7 +307,6 @@ func (r *cloudInitDriveResource) CreateCloudInitDrive(ctx context.Context, resou
 			"All settings in child sections of the resource will be overwritten by the contents of this file")
 
 		iso.AddFile(file, files["meta-data"])
-		file.Close()
 	} else {
 
 		metadata, d := MakeMetadata(ctx, resourcePlan)
@@ -339,7 +338,6 @@ func (r *cloudInitDriveResource) CreateCloudInitDrive(ctx context.Context, resou
 			"All settings in child sections of the resource will be overwritten by the contents of this file")
 
 		iso.AddFile(file, files["user-data"])
-		file.Close()
 	} else {
 
 		userData, d := MakeUserdata(ctx, resourcePlan)
@@ -371,7 +369,6 @@ func (r *cloudInitDriveResource) CreateCloudInitDrive(ctx context.Context, resou
 			"All settings in child sections of the resource will be overwritten by the contents of this file")
 
 		iso.AddFile(file, files["network-data"])
-		file.Close()
 	} else {
 
 		netConfig, d := MakeNetConfig(ctx, resourcePlan)
@@ -400,7 +397,6 @@ func (r *cloudInitDriveResource) CreateCloudInitDrive(ctx context.Context, resou
 		}
 
 		iso.AddFile(file, files["vendor-data"])
-		file.Close()
 	}
 
 	// ----- Custom files -----
@@ -487,7 +483,6 @@ func AddCustomFiles(resourcePlan *cloudInitDriveResourceModel, iso *iso9660.Imag
 			}
 
 			iso.AddFile(file, scripts.dstPath+ospath.Base(fileName.(basetypes.StringValue).ValueString()))
-			// file.Close()
 		}
 	}
 
@@ -504,7 +499,6 @@ func AddCustomFiles(resourcePlan *cloudInitDriveResourceModel, iso *iso9660.Imag
 		}
 
 		iso.AddFile(f, file.Dst.ValueString())
-		// f.Close()
 	}
 
 	return diags
