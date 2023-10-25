@@ -1,3 +1,10 @@
+## [1.1.3](https://github.com/vaerh/terraform-provider-cloudinit-drive/compare/v1.1.2...v1.1.3) (2023-10-25)
+
+
+### Bug Fixes
+
+* Closeing custom files before reading ([#43](https://github.com/vaerh/terraform-provider-cloudinit-drive/issues/43)) ([09e9931](https://github.com/vaerh/terraform-provider-cloudinit-drive/commit/09e99315510438996baa3006649a474dce4e98aa))
+
 ## [1.1.2](https://github.com/vaerh/terraform-provider-cloudinit-drive/compare/v1.1.1...v1.1.2) (2023-10-24)
 
 
