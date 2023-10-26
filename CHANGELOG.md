@@ -1,3 +1,10 @@
+## [1.1.4](https://github.com/vaerh/terraform-provider-cloudinit-drive/compare/v1.1.3...v1.1.4) (2023-10-26)
+
+
+### Bug Fixes
+
+* Add an external ISO maker ([3b0f2a7](https://github.com/vaerh/terraform-provider-cloudinit-drive/commit/3b0f2a796b8505ec12b4ea1a582b7a740e7ad452))
+
 ## [1.1.3](https://github.com/vaerh/terraform-provider-cloudinit-drive/compare/v1.1.2...v1.1.3) (2023-10-25)
 
 
