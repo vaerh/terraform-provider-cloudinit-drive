@@ -1,3 +1,10 @@
+## [1.1.5](https://github.com/vaerh/terraform-provider-cloudinit-drive/compare/v1.1.4...v1.1.5) (2023-10-26)
+
+
+### Bug Fixes
+
+* Warnings ([a761f5d](https://github.com/vaerh/terraform-provider-cloudinit-drive/commit/a761f5db99f31719c164a3dc74dcf04e2b4868d9))
+
 ## [1.1.4](https://github.com/vaerh/terraform-provider-cloudinit-drive/compare/v1.1.3...v1.1.4) (2023-10-26)
 
 
