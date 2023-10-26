@@ -38,6 +38,7 @@ resource "cloudinit_drive" "vm-104-cloudinit" {
 - `drive_name` (String) Name of the cloud-init drive.
 - `drive_path` (String) The path where the cloud-init drive will be saved.
 - `drive_type` (String) [ configdrive2 | nocloud | opennebula ] Specifies the cloud-init configuration format (Proxmox VE use the nocloud format for Linux, and configdrive2 for Windows).
+- `iso_maker` (String) [ genisoimage | mkisofs | hdiutil | oscdimg | xorriso ] Specifies the utility to generate the ISO file.
 
 ### Optional
 
