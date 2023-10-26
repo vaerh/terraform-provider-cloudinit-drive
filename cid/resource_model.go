@@ -44,6 +44,7 @@ type cloudInitDriveResourceModel struct {
 	DriveType               types.String `tfsdk:"drive_type" cid:"skip"`
 	DrivePath               types.String `tfsdk:"drive_path" cid:"skip"`
 	DriveName               types.String `tfsdk:"drive_name" cid:"skip"`
+	ISOMaker                types.String `tfsdk:"iso_maker" cid:"skip"`
 	Checksum                types.String `tfsdk:"checksum" cid:"skip"`
 	Size                    types.String `tfsdk:"size" cid:"skip"`
 	InstanceId              types.String `tfsdk:"instance_id" cid:"skip"`
