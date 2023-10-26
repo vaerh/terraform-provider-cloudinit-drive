@@ -6,7 +6,6 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
-	"reflect"
 )
 
 var (
@@ -27,8 +26,6 @@ var (
 			return []string{"-as", "genisoimage", "-rock", "-joliet", "-volid", isoLabel, "-output", dst, src}
 		},
 	}
-
-	readCloserType = reflect.TypeOf((*io.ReadCloser)(nil)).Elem()
 )
 
 type Iso struct {
@@ -46,11 +43,11 @@ func NewISOWriter(isoMakerCommand string) (*Iso, error) {
 
 // data is io.Reader or io.ReadCloser
 func (i *Iso) AddFile(data any, filePath string) {
-	switch data.(type) {
-	case io.Reader:
-		i.files[filePath] = io.NopCloser(data.(io.Reader))
+	switch data := data.(type) {
 	case io.ReadCloser:
-		i.files[filePath] = data.(io.ReadCloser)
+		i.files[filePath] = data
+	case io.Reader:
+		i.files[filePath] = io.NopCloser(data)
 	default:
 		panic("Method not applicable for types other than io.Reader or io.ReadCloser")
 	}
