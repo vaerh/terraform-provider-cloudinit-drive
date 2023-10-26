@@ -133,10 +133,11 @@ func (r *cloudInitDriveResource) Delete(ctx context.Context, req resource.Delete
 
 }
 
-// func (r *cloudInitDriveResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
-// 	resource.ImportStatePassthroughID(ctx, path.Root("instance_id"), req, resp)
-// }
-
+//	func (r *cloudInitDriveResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
+//		resource.ImportStatePassthroughID(ctx, path.Root("instance_id"), req, resp)
+//	}
+//
+// FIXME
 func (r *cloudInitDriveResource) ReadCloudInitDrive(ctx context.Context, stateData *cloudInitDriveResourceModel) (diags diag.Diagnostics) {
 	isoFile, err := url.JoinPath(stateData.DrivePath.ValueString(), stateData.DriveName.ValueString())
 	if err != nil {
@@ -280,7 +281,7 @@ func (r *cloudInitDriveResource) CreateCloudInitDrive(ctx context.Context, resou
 	}
 
 	// New ISO writer.
-	iso, err := iso9660.NewWriter()
+	iso, err := NewISOWriter(resourcePlan.ISOMaker.ValueString())
 
 	if err != nil {
 		diags.AddAttributeError(path.Empty(), err.Error(), "Error creating 'iso' file.")
@@ -427,8 +428,8 @@ func (r *cloudInitDriveResource) CreateCloudInitDrive(ctx context.Context, resou
 	buf := new(bytes.Buffer)
 	w := io.MultiWriter(img, hash, hashSha1, buf)
 
-	iso.Primary.VolumeIdentifier = cdLabel
-	err = iso.WriteTo(w)
+	iso.SetLabel(cdLabel)
+	_, err = iso.WriteTo(w)
 	if err != nil {
 		diags.AddAttributeError(path.Empty(), err.Error(), "Error writing 'iso' file.")
 		return
@@ -453,7 +454,7 @@ func (r *cloudInitDriveResource) CreateCloudInitDrive(ctx context.Context, resou
 	return
 }
 
-func AddCustomFiles(resourcePlan *cloudInitDriveResourceModel, iso *iso9660.ImageWriter) diag.Diagnostics {
+func AddCustomFiles(resourcePlan *cloudInitDriveResourceModel, iso *Iso) diag.Diagnostics {
 	if resourcePlan.CustomFiles == nil {
 		return nil
 	}

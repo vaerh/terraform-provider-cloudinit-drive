@@ -75,6 +75,13 @@ func (r *cloudInitDriveResource) Schema(_ context.Context, _ resource.SchemaRequ
 					stringplanmodifier.RequiresReplace(),
 				},
 			},
+			"iso_maker": schema.StringAttribute{
+				Required:            true,
+				MarkdownDescription: "[ genisoimage | mkisofs | hdiutil | oscdimg | xorriso ] Specifies the utility to generate the ISO file.",
+				Validators: []validator.String{
+					stringvalidator.OneOf("genisoimage", "mkisofs", "hdiutil", "oscdimg", "xorriso"),
+				},
+			},
 			"checksum": schema.StringAttribute{
 				Computed:            true,
 				MarkdownDescription: "SHA256 checksum of the generated ISO image.",
