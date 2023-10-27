@@ -83,7 +83,8 @@ resource "cloudinit_drive" "vm-104-cloudinit" {
 - `manage_resolv_conf` (Boolean) Whether to manage the resolv.conf file. resolv_conf block will be ignored unless this is set to true. **Default: false.** [Info](https://cloudinit.readthedocs.io/en/latest/topics/modules.html#resolv-conf)
 - `mount_default_fields` (List of String) Default mount configuration for any mount entry with less than 6 options provided. When specified, 6 items are required and represent /etc/fstab entries. **Default: defaults,nofail,x-systemd.requires=cloud-init.service,_netdev**. [Info](https://cloudinit.readthedocs.io/en/latest/topics/modules.html#mounts)
 - `mounts` (List of List of String) List of lists. Each inner list entry is a list of /etc/fstab mount declarations of the format: `[ fs_spec, fs_file, fs_vfstype, fs_mntops, fs-freq, fs_passno ]`. A mount declaration with less than 6 items will get remaining values from mount_default_fields. A mount declaration with onlyfs_spec and no fs_file mountpoint will be skipped. [Info](https://cloudinit.readthedocs.io/en/latest/topics/modules.html#mounts)
-- `network` (Block, Optional) Networking Config Version 2. [Info](https://canonical-cloud-init.readthedocs-hosted.com/en/latest/reference/network-config-format-v2.html) (see [below for nested schema](#nestedblock--network))
+- `network_v1` (Block, Optional) Networking Config Version 1. [Info](https://canonical-cloud-init.readthedocs-hosted.com/en/latest/reference/network-config-format-v1.html) (see [below for nested schema](#nestedblock--network_v1))
+- `network_v2` (Block, Optional) Networking Config Version 2. [Info](https://canonical-cloud-init.readthedocs-hosted.com/en/latest/reference/network-config-format-v2.html) (see [below for nested schema](#nestedblock--network_v2))
 - `package_reboot_if_required` (Boolean) Set true to reboot the system if required by presence of /var/run/reboot-required. *Default: false.* [Info](https://cloudinit.readthedocs.io/en/latest/topics/modules.html#package-update-upgrade-install)
 - `package_update` (Boolean) Set true to update packages. **Default: false.** [Info](https://cloudinit.readthedocs.io/en/latest/topics/modules.html#package-update-upgrade-install)
 - `package_upgrade` (Boolean) Set true to upgrade packages. **Default: false.** [Info](https://cloudinit.readthedocs.io/en/latest/topics/modules.html#package-update-upgrade-install)
@@ -222,22 +223,85 @@ Optional:
 - `variant` (String) Keyboard variant. Corresponds to XKBVARIANT.
 
 
-<a id="nestedblock--network"></a>
-### Nested Schema for `network`
+<a id="nestedblock--network_v1"></a>
+### Nested Schema for `network_v1`
 
 Optional:
 
-- `bonds` (Block List) (see [below for nested schema](#nestedblock--network--bonds))
-- `bridges` (Block List) (see [below for nested schema](#nestedblock--network--bridges))
-- `ethernets` (Block List) (see [below for nested schema](#nestedblock--network--ethernets))
-- `vlans` (Block List) (see [below for nested schema](#nestedblock--network--vlans))
+- `interface` (Block List) (see [below for nested schema](#nestedblock--network_v1--interface))
 
 Read-Only:
 
 - `version` (Number)
 
-<a id="nestedblock--network--bonds"></a>
-### Nested Schema for `network.bonds`
+<a id="nestedblock--network_v1--interface"></a>
+### Nested Schema for `network_v1.interface`
+
+Required:
+
+- `name` (String)
+- `type` (String)
+
+Optional:
+
+- `bond_interfaces` (Set of String)
+- `bridge_interfaces` (Set of String)
+- `macaddress` (String)
+- `mtu` (Number)
+- `ns_address` (Set of String)
+- `ns_interface` (Set of String)
+- `ns_search` (Set of String)
+- `params` (Map of String)
+- `route_destination` (String)
+- `route_gateway` (String)
+- `route_metric` (Number)
+- `subnets` (Block List) (see [below for nested schema](#nestedblock--network_v1--interface--subnets))
+- `vlan_id` (Number)
+- `vlan_link` (String)
+
+<a id="nestedblock--network_v1--interface--subnets"></a>
+### Nested Schema for `network_v1.interface.subnets`
+
+Optional:
+
+- `address` (String)
+- `control` (String)
+- `gateway` (String)
+- `netmask` (String)
+- `ns_address` (Set of String)
+- `ns_search` (Set of String)
+- `routes` (Block List) (see [below for nested schema](#nestedblock--network_v1--interface--subnets--routes))
+- `type` (String)
+
+<a id="nestedblock--network_v1--interface--subnets--routes"></a>
+### Nested Schema for `network_v1.interface.subnets.routes`
+
+Optional:
+
+- `destination` (String)
+- `gateway` (String)
+- `netmask` (String)
+
+
+
+
+
+<a id="nestedblock--network_v2"></a>
+### Nested Schema for `network_v2`
+
+Optional:
+
+- `bonds` (Block List) (see [below for nested schema](#nestedblock--network_v2--bonds))
+- `bridges` (Block List) (see [below for nested schema](#nestedblock--network_v2--bridges))
+- `ethernets` (Block List) (see [below for nested schema](#nestedblock--network_v2--ethernets))
+- `vlans` (Block List) (see [below for nested schema](#nestedblock--network_v2--vlans))
+
+Read-Only:
+
+- `version` (Number)
+
+<a id="nestedblock--network_v2--bonds"></a>
+### Nested Schema for `network_v2.bonds`
 
 Required:
 
@@ -254,13 +318,13 @@ Optional:
 - `gateway6` (String)
 - `interfaces` (Set of String)
 - `mtu` (Number)
-- `nameservers` (Block, Optional) (see [below for nested schema](#nestedblock--network--bonds--nameservers))
+- `nameservers` (Block, Optional) (see [below for nested schema](#nestedblock--network_v2--bonds--nameservers))
 - `parameters` (Map of String)
 - `renderer` (String)
-- `routes` (Block List) (see [below for nested schema](#nestedblock--network--bonds--routes))
+- `routes` (Block List) (see [below for nested schema](#nestedblock--network_v2--bonds--routes))
 
-<a id="nestedblock--network--bonds--nameservers"></a>
-### Nested Schema for `network.bonds.nameservers`
+<a id="nestedblock--network_v2--bonds--nameservers"></a>
+### Nested Schema for `network_v2.bonds.nameservers`
 
 Optional:
 
@@ -268,8 +332,8 @@ Optional:
 - `search` (Set of String)
 
 
-<a id="nestedblock--network--bonds--routes"></a>
-### Nested Schema for `network.bonds.routes`
+<a id="nestedblock--network_v2--bonds--routes"></a>
+### Nested Schema for `network_v2.bonds.routes`
 
 Optional:
 
@@ -279,8 +343,8 @@ Optional:
 
 
 
-<a id="nestedblock--network--bridges"></a>
-### Nested Schema for `network.bridges`
+<a id="nestedblock--network_v2--bridges"></a>
+### Nested Schema for `network_v2.bridges`
 
 Required:
 
@@ -297,13 +361,13 @@ Optional:
 - `gateway6` (String)
 - `interfaces` (Set of String)
 - `mtu` (Number)
-- `nameservers` (Block, Optional) (see [below for nested schema](#nestedblock--network--bridges--nameservers))
+- `nameservers` (Block, Optional) (see [below for nested schema](#nestedblock--network_v2--bridges--nameservers))
 - `parameters` (Map of String)
 - `renderer` (String)
-- `routes` (Block List) (see [below for nested schema](#nestedblock--network--bridges--routes))
+- `routes` (Block List) (see [below for nested schema](#nestedblock--network_v2--bridges--routes))
 
-<a id="nestedblock--network--bridges--nameservers"></a>
-### Nested Schema for `network.bridges.nameservers`
+<a id="nestedblock--network_v2--bridges--nameservers"></a>
+### Nested Schema for `network_v2.bridges.nameservers`
 
 Optional:
 
@@ -311,8 +375,8 @@ Optional:
 - `search` (Set of String)
 
 
-<a id="nestedblock--network--bridges--routes"></a>
-### Nested Schema for `network.bridges.routes`
+<a id="nestedblock--network_v2--bridges--routes"></a>
+### Nested Schema for `network_v2.bridges.routes`
 
 Optional:
 
@@ -322,8 +386,8 @@ Optional:
 
 
 
-<a id="nestedblock--network--ethernets"></a>
-### Nested Schema for `network.ethernets`
+<a id="nestedblock--network_v2--ethernets"></a>
+### Nested Schema for `network_v2.ethernets`
 
 Required:
 
@@ -338,16 +402,16 @@ Optional:
 - `dhcp6_overrides` (Map of String)
 - `gateway4` (String)
 - `gateway6` (String)
-- `match` (Block, Optional) (see [below for nested schema](#nestedblock--network--ethernets--match))
+- `match` (Block, Optional) (see [below for nested schema](#nestedblock--network_v2--ethernets--match))
 - `mtu` (Number)
-- `nameservers` (Block, Optional) (see [below for nested schema](#nestedblock--network--ethernets--nameservers))
+- `nameservers` (Block, Optional) (see [below for nested schema](#nestedblock--network_v2--ethernets--nameservers))
 - `renderer` (String)
-- `routes` (Block List) (see [below for nested schema](#nestedblock--network--ethernets--routes))
+- `routes` (Block List) (see [below for nested schema](#nestedblock--network_v2--ethernets--routes))
 - `set_name` (String)
 - `wakeonlan` (Boolean)
 
-<a id="nestedblock--network--ethernets--match"></a>
-### Nested Schema for `network.ethernets.match`
+<a id="nestedblock--network_v2--ethernets--match"></a>
+### Nested Schema for `network_v2.ethernets.match`
 
 Optional:
 
@@ -356,8 +420,8 @@ Optional:
 - `name` (String)
 
 
-<a id="nestedblock--network--ethernets--nameservers"></a>
-### Nested Schema for `network.ethernets.nameservers`
+<a id="nestedblock--network_v2--ethernets--nameservers"></a>
+### Nested Schema for `network_v2.ethernets.nameservers`
 
 Optional:
 
@@ -365,8 +429,8 @@ Optional:
 - `search` (Set of String)
 
 
-<a id="nestedblock--network--ethernets--routes"></a>
-### Nested Schema for `network.ethernets.routes`
+<a id="nestedblock--network_v2--ethernets--routes"></a>
+### Nested Schema for `network_v2.ethernets.routes`
 
 Optional:
 
@@ -376,8 +440,8 @@ Optional:
 
 
 
-<a id="nestedblock--network--vlans"></a>
-### Nested Schema for `network.vlans`
+<a id="nestedblock--network_v2--vlans"></a>
+### Nested Schema for `network_v2.vlans`
 
 Required:
 
@@ -394,16 +458,16 @@ Optional:
 - `gateway6` (String)
 - `link` (String)
 - `mtu` (Number)
-- `nameservers` (Block, Optional) (see [below for nested schema](#nestedblock--network--vlans--nameservers))
+- `nameservers` (Block, Optional) (see [below for nested schema](#nestedblock--network_v2--vlans--nameservers))
 - `renderer` (String)
-- `routes` (Block List) (see [below for nested schema](#nestedblock--network--vlans--routes))
+- `routes` (Block List) (see [below for nested schema](#nestedblock--network_v2--vlans--routes))
 
 Read-Only:
 
 - `id` (Number) The ID of this resource.
 
-<a id="nestedblock--network--vlans--nameservers"></a>
-### Nested Schema for `network.vlans.nameservers`
+<a id="nestedblock--network_v2--vlans--nameservers"></a>
+### Nested Schema for `network_v2.vlans.nameservers`
 
 Optional:
 
@@ -411,8 +475,8 @@ Optional:
 - `search` (Set of String)
 
 
-<a id="nestedblock--network--vlans--routes"></a>
-### Nested Schema for `network.vlans.routes`
+<a id="nestedblock--network_v2--vlans--routes"></a>
+### Nested Schema for `network_v2.vlans.routes`
 
 Optional:
 

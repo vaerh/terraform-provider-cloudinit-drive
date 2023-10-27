@@ -1,3 +1,10 @@
+## [1.2.0](https://github.com/vaerh/terraform-provider-cloudinit-drive/compare/v1.1.5...v1.2.0) (2023-10-27)
+
+
+### Features
+
+* Add Network Config v1 ([ea4e76a](https://github.com/vaerh/terraform-provider-cloudinit-drive/commit/ea4e76a0555d52f3df82ed420e5b8387fdc77766))
+
 ## [1.1.5](https://github.com/vaerh/terraform-provider-cloudinit-drive/compare/v1.1.4...v1.1.5) (2023-10-26)
 
 
