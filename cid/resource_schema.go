@@ -4,7 +4,9 @@ import (
 	"context"
 	"regexp"
 
+	"github.com/hashicorp/terraform-plugin-framework-validators/resourcevalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
+	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
@@ -13,8 +15,9 @@ import (
 )
 
 var (
-	_ resource.Resource              = &cloudInitDriveResource{}
-	_ resource.ResourceWithConfigure = &cloudInitDriveResource{}
+	_ resource.Resource                     = &cloudInitDriveResource{}
+	_ resource.ResourceWithConfigure        = &cloudInitDriveResource{}
+	_ resource.ResourceWithConfigValidators = &cloudInitDriveResource{}
 	// _ resource.ResourceWithImportState = &cloudInitDriveResource{}
 )
 
@@ -35,6 +38,12 @@ func (r *cloudInitDriveResource) Configure(ctx context.Context, req resource.Con
 		return
 	}
 	r.client = req.ProviderData.(*SSHClient)
+}
+
+func (r *cloudInitDriveResource) ConfigValidators(ctx context.Context) []resource.ConfigValidator {
+	return []resource.ConfigValidator{
+		resourcevalidator.ExactlyOneOf(path.MatchRoot("network_v1"), path.MatchRoot("network_v2")),
+	}
 }
 
 func (r *cloudInitDriveResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
@@ -149,7 +158,8 @@ func (r *cloudInitDriveResource) Schema(_ context.Context, _ resource.SchemaRequ
 			"write_files":          WriteFiles,
 
 			// Network Config.
-			"network": NetConf(),
+			"network_v1": NetConfV1(),
+			"network_v2": NetConfV2(),
 		},
 	}
 }

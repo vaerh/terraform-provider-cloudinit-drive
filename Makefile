@@ -1,5 +1,4 @@
-VERSION=$(shell git describe --tags --abbrev=0)
-VERSION=v0.0.1
+VERSION=$(shell git describe --tags --abbrev=0 | tr -d 'v')
 
 .PHONY: docs debug
 
@@ -13,6 +12,8 @@ docs:
 
 debug:
 	go build -gcflags="all=-N -l" -o terraform-provider-cloudinit-drive_${VERSION} main.go
+	zip -m terraform-provider-cloudinit-drive_${VERSION}_linux_amd64.zip terraform-provider-cloudinit-drive_${VERSION}
+
 
 compile:
 	mkdir -p pkg

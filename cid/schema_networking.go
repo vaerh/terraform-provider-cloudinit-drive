@@ -6,15 +6,210 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
-type NetConfType struct {
-	Version   types.Int64         `tfsdk:"version"`
-	Ethernets []NetConfEthernet   `tfsdk:"ethernets" yaml:"ethernets,omitempty"`
-	Bonds     []NetConfBondBridge `tfsdk:"bonds" yaml:"bonds,omitempty"`
-	Bridges   []NetConfBondBridge `tfsdk:"bridges" yaml:"bridges,omitempty"`
-	Vlans     []NetConfVlan       `tfsdk:"vlans" yaml:"vlans,omitempty"`
+// Network configuration v1
+type NetConfTypeV1 struct {
+	Version types.Int64          `tfsdk:"version"`
+	Config  []NetConfV1Interface `tfsdk:"interface" yaml:"config,omitempty"`
 }
 
-type NetConfEthernet struct {
+type NetConfV1Interface struct {
+	Type             types.String       `tfsdk:"type" yaml:"type,omitempty"`
+	Name             types.String       `tfsdk:"name" yaml:"name,omitempty"`
+	Macaddress       types.String       `tfsdk:"macaddress" yaml:"mac_address,omitempty"`
+	Mtu              types.Int64        `tfsdk:"mtu" yaml:"mtu,omitempty"`
+	Params           types.Map          `tfsdk:"params" yaml:"params,omitempty"`                  // Bond, Bridge
+	BondInterfaces   types.Set          `tfsdk:"bond_interfaces" yaml:"bond_interfaces,flow"`     // Bond
+	BridgeInterfaces types.Set          `tfsdk:"bridge_interfaces" yaml:"bridge_interfaces,flow"` // Bridge
+	VlanId           types.Int64        `tfsdk:"vlan_id" yaml:"vlan_id,flow"`                     // VLAN
+	VlanLink         types.String       `tfsdk:"vlan_link" yaml:"vlan_link,omitempty"`            // VLAN
+	NSAddress        types.Set          `tfsdk:"ns_address" yaml:"address,flow,omitempty"`        // Nameserver
+	NSSearch         types.Set          `tfsdk:"ns_search" yaml:"search,flow,omitempty"`          // Nameserver
+	NSInterface      types.Set          `tfsdk:"ns_interface" yaml:"interface,flow"`              // Nameserver
+	RouteDestination types.String       `tfsdk:"route_destination" yaml:"destination,omitempty"`  // Route
+	RouteGateway     types.String       `tfsdk:"route_gateway" yaml:"gateway,omitempty"`          // Route
+	RouteMetric      types.Int64        `tfsdk:"route_metric" yaml:"metric,omitempty"`            // Route
+	Subnets          []NetConfV1Subnets `tfsdk:"subnets" yaml:"subnets,omitempty"`
+}
+
+type NetConfV1Subnets struct {
+	Type      types.String `tfsdk:"type" yaml:"type,omitempty"`
+	Control   types.String `tfsdk:"control" yaml:"control,omitempty"`
+	Address   types.String `tfsdk:"address" yaml:"address,flow,omitempty"`
+	Netmask   types.String `tfsdk:"netmask" yaml:"netmask,omitempty"`
+	Gateway   types.String `tfsdk:"gateway" yaml:"gateway,omitempty"`
+	NSAddress types.Set    `tfsdk:"ns_address" yaml:"dns_nameservers,flow,omitempty"`
+	NSSearch  types.Set    `tfsdk:"ns_search" yaml:"dns_search,flow,omitempty"`
+	Routes    []struct {
+		Gateway     types.String `tfsdk:"gateway" yaml:"gateway,omitempty"`
+		Netmask     types.String `tfsdk:"netmask" yaml:"netmask,omitempty"`
+		Destination types.String `tfsdk:"destination" yaml:"destination,omitempty"`
+	} `tfsdk:"routes" yaml:"routes,flow,omitempty"`
+}
+
+func NetConfV1() schema.SingleNestedBlock {
+	return schema.SingleNestedBlock{
+		MarkdownDescription: "Networking Config Version 1. " +
+			"[Info](https://canonical-cloud-init.readthedocs-hosted.com/en/latest/reference/network-config-format-v1.html)",
+
+		Attributes: map[string]schema.Attribute{
+			"version": schema.Int64Attribute{
+				Computed: true,
+				Default:  int64default.StaticInt64(1),
+			},
+		},
+
+		Blocks: map[string]schema.Block{
+			"interface": schema.ListNestedBlock{
+				MarkdownDescription: "",
+
+				NestedObject: schema.NestedBlockObject{
+					Attributes: map[string]schema.Attribute{
+						"type": schema.StringAttribute{
+							Required:            true,
+							MarkdownDescription: "",
+						},
+						"name": schema.StringAttribute{
+							Required:            true,
+							MarkdownDescription: "",
+						},
+						"macaddress": schema.StringAttribute{
+							Optional:            true,
+							MarkdownDescription: "",
+						},
+						"mtu": schema.Int64Attribute{
+							Optional:            true,
+							MarkdownDescription: "",
+						},
+						"params": schema.MapAttribute{
+							Optional:            true,
+							MarkdownDescription: "",
+							ElementType:         types.StringType,
+						},
+						"bond_interfaces": schema.SetAttribute{
+							Optional:            true,
+							MarkdownDescription: "",
+							ElementType:         types.StringType,
+						},
+						"bridge_interfaces": schema.SetAttribute{
+							Optional:            true,
+							MarkdownDescription: "",
+							ElementType:         types.StringType,
+						},
+						"vlan_id": schema.Int64Attribute{
+							Optional:            true,
+							MarkdownDescription: "",
+						},
+						"vlan_link": schema.StringAttribute{
+							Optional:            true,
+							MarkdownDescription: "",
+						},
+						"ns_address": schema.SetAttribute{
+							Optional:            true,
+							MarkdownDescription: "",
+							ElementType:         types.StringType,
+						},
+						"ns_search": schema.SetAttribute{
+							Optional:            true,
+							MarkdownDescription: "",
+							ElementType:         types.StringType,
+						},
+						"ns_interface": schema.SetAttribute{
+							Optional:            true,
+							MarkdownDescription: "",
+							ElementType:         types.StringType,
+						},
+						"route_destination": schema.StringAttribute{
+							Optional:            true,
+							MarkdownDescription: "",
+						},
+						"route_gateway": schema.StringAttribute{
+							Optional:            true,
+							MarkdownDescription: "",
+						},
+						"route_metric": schema.Int64Attribute{
+							Optional:            true,
+							MarkdownDescription: "",
+						},
+					},
+
+					Blocks: map[string]schema.Block{
+						"subnets": schema.ListNestedBlock{
+							MarkdownDescription: "",
+
+							NestedObject: schema.NestedBlockObject{
+								Attributes: map[string]schema.Attribute{
+									"type": schema.StringAttribute{
+										Optional:            true,
+										MarkdownDescription: "",
+									},
+									"control": schema.StringAttribute{
+										Optional:            true,
+										MarkdownDescription: "",
+									},
+									"address": schema.StringAttribute{
+										Optional:            true,
+										MarkdownDescription: "",
+									},
+									"netmask": schema.StringAttribute{
+										Optional:            true,
+										MarkdownDescription: "",
+									},
+									"gateway": schema.StringAttribute{
+										Optional:            true,
+										MarkdownDescription: "",
+									},
+									"ns_address": schema.SetAttribute{
+										Optional:            true,
+										MarkdownDescription: "",
+										ElementType:         types.StringType,
+									},
+									"ns_search": schema.SetAttribute{
+										Optional:            true,
+										MarkdownDescription: "",
+										ElementType:         types.StringType,
+									},
+								},
+								Blocks: map[string]schema.Block{
+									"routes": schema.ListNestedBlock{
+										MarkdownDescription: "",
+
+										NestedObject: schema.NestedBlockObject{
+											Attributes: map[string]schema.Attribute{
+												"gateway": schema.StringAttribute{
+													Optional:            true,
+													MarkdownDescription: "",
+												},
+												"netmask": schema.StringAttribute{
+													Optional:            true,
+													MarkdownDescription: "",
+												},
+												"destination": schema.StringAttribute{
+													Optional:            true,
+													MarkdownDescription: "",
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+	}
+}
+
+// Network configuration v2
+type NetConfTypeV2 struct {
+	Version   types.Int64           `tfsdk:"version"`
+	Ethernets []NetConfV2Ethernet   `tfsdk:"ethernets" yaml:"ethernets,omitempty"`
+	Bonds     []NetConfV2BondBridge `tfsdk:"bonds" yaml:"bonds,omitempty"`
+	Bridges   []NetConfV2BondBridge `tfsdk:"bridges" yaml:"bridges,omitempty"`
+	Vlans     []NetConfV2Vlan       `tfsdk:"vlans" yaml:"vlans,omitempty"`
+}
+
+type NetConfV2Ethernet struct {
 	Alias types.String `tfsdk:"alias" cid:"skip"`
 	Match *struct {
 		Driver     types.String `tfsdk:"driver" yaml:"driver,omitempty"`
@@ -43,7 +238,7 @@ type NetConfEthernet struct {
 	} `tfsdk:"routes" yaml:"routes,omitempty"`
 }
 
-type NetConfBondBridge struct {
+type NetConfV2BondBridge struct {
 	Alias          types.String `tfsdk:"alias" cid:"skip"`
 	Interfaces     types.Set    `tfsdk:"interfaces" yaml:"interfaces,flow"`
 	Parameters     types.Map    `tfsdk:"parameters" yaml:"parameters,omitempty"`
@@ -67,7 +262,7 @@ type NetConfBondBridge struct {
 	} `tfsdk:"routes" yaml:"routes,omitempty"`
 }
 
-type NetConfVlan struct {
+type NetConfV2Vlan struct {
 	Alias          types.String `tfsdk:"alias" cid:"skip"`
 	Id             types.Int64  `tfsdk:"id" yaml:"id,flow"`
 	Link           types.String `tfsdk:"link" yaml:"link,omitempty"`
@@ -91,7 +286,7 @@ type NetConfVlan struct {
 	} `tfsdk:"routes" yaml:"routes,omitempty"`
 }
 
-func NetConf() schema.SingleNestedBlock {
+func NetConfV2() schema.SingleNestedBlock {
 	var netSchema = schema.SingleNestedBlock{
 		MarkdownDescription: "Networking Config Version 2. " +
 			"[Info](https://canonical-cloud-init.readthedocs-hosted.com/en/latest/reference/network-config-format-v2.html)",

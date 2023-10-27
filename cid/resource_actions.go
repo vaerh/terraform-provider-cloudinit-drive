@@ -371,11 +371,26 @@ func (r *cloudInitDriveResource) CreateCloudInitDrive(ctx context.Context, resou
 
 		iso.AddFile(file, files["network-data"])
 	} else {
+		// Dublicates ExactlyOneOf check.
+		// if resourcePlan.NetConfV1 == nil && resourcePlan.NetConfV2 == nil {
+		// 	diags.Append(diag.NewErrorDiagnostic("The network settings block is not found in the configuration.",
+		// 		"You must specify a file with network settings or an empty 'network_v1 {} or network_v2 {}' block."))
+		// 	return
+		// }
 
-		netConfig, d := MakeNetConfig(ctx, resourcePlan)
-		diags.Append(d...)
-		if diags.HasError() {
-			return
+		var netConfig []byte
+		var d diag.Diagnostics
+
+		if resourcePlan.NetConfV1 != nil {
+			netConfig, d = MakeNetConfigV1(ctx, resourcePlan)
+			if diags.Append(d...); diags.HasError() {
+				return
+			}
+		} else {
+			netConfig, d = MakeNetConfigV2(ctx, resourcePlan)
+			if diags.Append(d...); diags.HasError() {
+				return
+			}
 		}
 
 		iso.AddFile(bytes.NewReader(netConfig), files["network-data"])

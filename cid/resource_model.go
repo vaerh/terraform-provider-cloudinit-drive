@@ -94,5 +94,6 @@ type cloudInitDriveResourceModel struct {
 	Users                  []UsersType             `tfsdk:"users"`
 	Wireguard              *WireguardType          `tfsdk:"wireguard"`
 	WriteFiles             []WriteFilesType        `tfsdk:"write_files"`
-	NetConf                *NetConfType            `tfsdk:"network" cid:"skip"`
+	NetConfV1              *NetConfTypeV1          `tfsdk:"network_v1" cid:"skip"`
+	NetConfV2              *NetConfTypeV2          `tfsdk:"network_v2" cid:"skip"`
 }
