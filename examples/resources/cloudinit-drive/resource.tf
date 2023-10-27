@@ -11,5 +11,5 @@ resource "cloudinit_drive" "vm-104-cloudinit" {
     scripts_per_boot = ["scripts/make_static_routes.sh"]
   }
 
-  network {}
+  network_v1 {}
 }
