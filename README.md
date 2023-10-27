@@ -2,9 +2,9 @@
 This is a provider for making Cloud-Init drives. Developed for use with Proxmox VE.
 Publication in the Hashicorp registry is not planned!
 
-You can find a list of attributes on the [documentation page](docs/resources/cloudinit-drive.md).
+You can find a list of attributes on the [documentation page](docs/resources/cloudinit-drive.md) + [MAC](docs/resources/mac.md).
 
-Examples of HCL configuration files are in the directory with the test [files](cid/tests).
+[Examples](docs/resources/cloudinit-drive.md#examples) of HCL configuration files are in the directory with the test [files](cid/tests).
 
 Preparation of Porxmox VE
 ``` bash
@@ -69,32 +69,6 @@ resource "cloudinit-drive" "vm-test-cloudinit" {
   drive_type = "nocloud"
 
   hostname = "vm${var.vm_id}-test"
-
-  #  network_v1 {
-  #    interface {
-  #      type = "physical"
-  #      name = "eth0"
-  #      macaddress = "00:11:22:33:44:55"
-  #      subnets {
-  #        type = "dhcp"
-  #      }
-  #      subnets {
-  #        type    = "static"
-  #        address = "10.184.225.122"
-  #        netmask = "255.255.255.252"
-  #        routes {
-  #          gateway     = "10.184.225.121"
-  #          netmask     = "255.240.0.0"
-  #          destination = "10.176.0.0"
-  #        }
-  #        routes {
-  #          gateway     = "10.184.225.121"
-  #          netmask     = "255.240.0.0"
-  #          destination = "10.208.0.0"
-  #        }
-  #      }
-  #    }
-  #  }
 
   network_v2 {
     ethernets {

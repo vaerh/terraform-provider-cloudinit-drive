@@ -1183,7 +1183,7 @@ write_files {
 ```
 
 ### Network v1 configuration
-```
+```terraform
   network_v1 {
     interface {
       type       = "physical"
