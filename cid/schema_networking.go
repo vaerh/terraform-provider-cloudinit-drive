@@ -15,16 +15,16 @@ type NetConfTypeV1 struct {
 type NetConfV1Interface struct {
 	Type             types.String       `tfsdk:"type" yaml:"type,omitempty"`
 	Name             types.String       `tfsdk:"name" yaml:"name,omitempty"`
-	Macaddress       types.String       `tfsdk:"macaddress" yaml:"mac_address,omitempty"`
+	MacAddress       types.String       `tfsdk:"mac_address" yaml:"mac_address,omitempty"`
 	Mtu              types.Int64        `tfsdk:"mtu" yaml:"mtu,omitempty"`
 	Params           types.Map          `tfsdk:"params" yaml:"params,omitempty"`                  // Bond, Bridge
 	BondInterfaces   types.Set          `tfsdk:"bond_interfaces" yaml:"bond_interfaces,flow"`     // Bond
 	BridgeInterfaces types.Set          `tfsdk:"bridge_interfaces" yaml:"bridge_interfaces,flow"` // Bridge
 	VlanId           types.Int64        `tfsdk:"vlan_id" yaml:"vlan_id,flow"`                     // VLAN
 	VlanLink         types.String       `tfsdk:"vlan_link" yaml:"vlan_link,omitempty"`            // VLAN
-	NSAddress        types.Set          `tfsdk:"ns_address" yaml:"address,flow,omitempty"`        // Nameserver
-	NSSearch         types.Set          `tfsdk:"ns_search" yaml:"search,flow,omitempty"`          // Nameserver
-	NSInterface      types.Set          `tfsdk:"ns_interface" yaml:"interface,flow"`              // Nameserver
+	DNSAddress       types.Set          `tfsdk:"dns_nameservers" yaml:"address,flow,omitempty"`   // Nameserver
+	DNSSearch        types.Set          `tfsdk:"dns_search" yaml:"search,flow,omitempty"`         // Nameserver
+	DNSInterface     types.Set          `tfsdk:"dns_interface" yaml:"interface,flow"`             // Nameserver
 	RouteDestination types.String       `tfsdk:"route_destination" yaml:"destination,omitempty"`  // Route
 	RouteGateway     types.String       `tfsdk:"route_gateway" yaml:"gateway,omitempty"`          // Route
 	RouteMetric      types.Int64        `tfsdk:"route_metric" yaml:"metric,omitempty"`            // Route
@@ -32,14 +32,14 @@ type NetConfV1Interface struct {
 }
 
 type NetConfV1Subnets struct {
-	Type      types.String `tfsdk:"type" yaml:"type,omitempty"`
-	Control   types.String `tfsdk:"control" yaml:"control,omitempty"`
-	Address   types.String `tfsdk:"address" yaml:"address,flow,omitempty"`
-	Netmask   types.String `tfsdk:"netmask" yaml:"netmask,omitempty"`
-	Gateway   types.String `tfsdk:"gateway" yaml:"gateway,omitempty"`
-	NSAddress types.Set    `tfsdk:"ns_address" yaml:"dns_nameservers,flow,omitempty"`
-	NSSearch  types.Set    `tfsdk:"ns_search" yaml:"dns_search,flow,omitempty"`
-	Routes    []struct {
+	Type       types.String `tfsdk:"type" yaml:"type,omitempty"`
+	Control    types.String `tfsdk:"control" yaml:"control,omitempty"`
+	Address    types.String `tfsdk:"address" yaml:"address,flow,omitempty"`
+	Netmask    types.String `tfsdk:"netmask" yaml:"netmask,omitempty"`
+	Gateway    types.String `tfsdk:"gateway" yaml:"gateway,omitempty"`
+	DNSAddress types.Set    `tfsdk:"dns_nameservers" yaml:"dns_nameservers,flow,omitempty"`
+	DNSSearch  types.Set    `tfsdk:"dns_search" yaml:"dns_search,flow,omitempty"`
+	Routes     []struct {
 		Gateway     types.String `tfsdk:"gateway" yaml:"gateway,omitempty"`
 		Netmask     types.String `tfsdk:"netmask" yaml:"netmask,omitempty"`
 		Destination types.String `tfsdk:"destination" yaml:"destination,omitempty"`
@@ -72,7 +72,7 @@ func NetConfV1() schema.SingleNestedBlock {
 							Required:            true,
 							MarkdownDescription: "",
 						},
-						"macaddress": schema.StringAttribute{
+						"mac_address": schema.StringAttribute{
 							Optional:            true,
 							MarkdownDescription: "",
 						},
@@ -103,17 +103,17 @@ func NetConfV1() schema.SingleNestedBlock {
 							Optional:            true,
 							MarkdownDescription: "",
 						},
-						"ns_address": schema.SetAttribute{
+						"dns_nameservers": schema.SetAttribute{
 							Optional:            true,
 							MarkdownDescription: "",
 							ElementType:         types.StringType,
 						},
-						"ns_search": schema.SetAttribute{
+						"dns_search": schema.SetAttribute{
 							Optional:            true,
 							MarkdownDescription: "",
 							ElementType:         types.StringType,
 						},
-						"ns_interface": schema.SetAttribute{
+						"dns_interface": schema.SetAttribute{
 							Optional:            true,
 							MarkdownDescription: "",
 							ElementType:         types.StringType,
@@ -158,12 +158,12 @@ func NetConfV1() schema.SingleNestedBlock {
 										Optional:            true,
 										MarkdownDescription: "",
 									},
-									"ns_address": schema.SetAttribute{
+									"dns_nameservers": schema.SetAttribute{
 										Optional:            true,
 										MarkdownDescription: "",
 										ElementType:         types.StringType,
 									},
-									"ns_search": schema.SetAttribute{
+									"dns_search": schema.SetAttribute{
 										Optional:            true,
 										MarkdownDescription: "",
 										ElementType:         types.StringType,
