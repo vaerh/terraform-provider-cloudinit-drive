@@ -70,7 +70,33 @@ resource "cloudinit-drive" "vm-test-cloudinit" {
 
   hostname = "vm${var.vm_id}-test"
 
-  network {
+  #  network_v1 {
+  #    interface {
+  #      type = "physical"
+  #      name = "eth0"
+  #      macaddress = "00:11:22:33:44:55"
+  #      subnets {
+  #        type = "dhcp"
+  #      }
+  #      subnets {
+  #        type    = "static"
+  #        address = "10.184.225.122"
+  #        netmask = "255.255.255.252"
+  #        routes {
+  #          gateway     = "10.184.225.121"
+  #          netmask     = "255.240.0.0"
+  #          destination = "10.176.0.0"
+  #        }
+  #        routes {
+  #          gateway     = "10.184.225.121"
+  #          netmask     = "255.240.0.0"
+  #          destination = "10.208.0.0"
+  #        }
+  #      }
+  #    }
+  #  }
+
+  network_v2 {
     ethernets {
       alias = "em0"
       dhcp4 = true
