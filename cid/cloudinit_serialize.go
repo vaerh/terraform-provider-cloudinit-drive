@@ -286,5 +286,5 @@ func makeTag(tag reflect.StructTag) reflect.StructTag {
 		}
 		res[i] = tagType + `:"` + tag.Get("tfsdk") + `"`
 	}
-	return reflect.StructTag(strings.Join(res, ","))
+	return reflect.StructTag(strings.Join(res, " "))
 }
