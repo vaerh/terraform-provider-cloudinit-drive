@@ -1,7 +1,8 @@
 resource "cloudinit_drive" "vm-104-cloudinit" {
   drive_name = "vm-101-cloud-init.iso"
   drive_path = "file://./"
-  drive_type = "configdrive2"
+  drive_type = "nocloud"
+  iso_maker  = "mkisofs"
 
   custom_files {
     meta_data        = "configs/meta_data.json"

@@ -2,6 +2,7 @@ resource "cloudinit-drive" "vm-test-cloudinit-drive" {
   drive_name = "vm-101-cloud-init.%s"
   drive_path = "file://./"
   drive_type = "configdrive2"
+  iso_maker  = "mkisofs"
 
   custom_files {
     scripts_per_boot     = ["tests/ca_certs.tf", "tests/ca_certs.yml"]
@@ -21,5 +22,5 @@ resource "cloudinit-drive" "vm-test-cloudinit-drive" {
     }
   }
 
-  network {}
+  network_v2 {}
 }

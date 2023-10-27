@@ -1,0 +1,123 @@
+---
+page_title: "{{.Name}} {{.Type}} - {{.ProviderName}}"
+subcategory: ""
+description: |-
+{{ .Description | plainmarkdown | trimspace | prefixlines "  " }}
+---
+
+# {{.Name}} ({{.Type}})
+
+{{ .Description | trimspace }}
+
+~> ** Windows & cloudbase-init ** 
+The cloudbase-init provisioning system supports [OpenStack](https://cloudbase-init.readthedocs.io/en/latest/services.html?highlight=network#openstack-configuration-drive) and [NoCloud](https://cloudbase-init.readthedocs.io/en/latest/services.html?highlight=network#nocloud-configuration-drive) format configuration disks.
+The network configuration for NoCloud must be [version 1](https://canonical-cloud-init.readthedocs-hosted.com/en/latest/reference/network-config-format-v1.html).
+
+## Example Usage
+
+{{ tffile "examples/resources/cloudinit-drive/resource.tf" }}
+
+### Enhanced configuration
+
+{{ tffile "examples/resources/cloudinit-drive/cid.tf" }}
+
+{{ .SchemaMarkdown | trimspace }}
+
+## Examples
+### CA certificate
+{{ tffile "cid/tests/ca_certs.tf" }}
+
+### Custom configuration files
+{{ tffile "cid/tests/custom_files.tf" }}
+
+### Disks configuration
+{{ tffile "cid/tests/disk_setup.tf" }}
+
+### Final message
+{{ tffile "cid/tests/final_message.tf" }}
+
+### Growpart
+{{ tffile "cid/tests/growpart.tf" }}
+
+### Hostname
+{{ tffile "cid/tests/hostname.tf" }}
+
+### Keyboard settings
+{{ tffile "cid/tests/keyboard.tf" }}
+
+### Locale
+{{ tffile "cid/tests/locale.tf" }}
+
+### /etc/hosts
+{{ tffile "cid/tests/manage_etc_hosts.tf" }}
+
+### Mount points
+{{ tffile "cid/tests/mounts.tf" }}
+
+### Package management
+{{ tffile "cid/tests/packages.tf" }}
+
+### Password management
+{{ tffile "cid/tests/password.tf" }}
+
+### Power state
+{{ tffile "cid/tests/power_state.tf" }}
+
+### Random seed
+{{ tffile "cid/tests/random_seed.tf" }}
+
+### /etc/resolv.conf
+{{ tffile "cid/tests/resolv_conf.tf" }}
+
+### Run commands
+{{ tffile "cid/tests/runcmd.tf" }}
+
+### SSH configuration
+{{ tffile "cid/tests/ssh.tf" }}
+
+### Timezone settings
+{{ tffile "cid/tests/timezone.tf" }}
+
+### Users & groups
+{{ tffile "cid/tests/users_and_groups.tf" }}
+
+### Wireguard configuration
+{{ tffile "cid/tests/wireguard.tf" }}
+
+### Writing files to target system
+{{ tffile "cid/tests/write_files.tf" }}
+
+### Network v1 configuration
+```
+  network_v1 {
+    interface {
+      type       = "physical"
+      name       = "interface0"
+      mac_address = "52:54:00:12:34:00"
+      mtu        = 1450
+      subnets {
+        type       = "static"
+        address    = "192.168.1.10"
+        netmask    = "255.255.255.0"
+        dns_nameservers = ["192.168.1.11"]
+      }
+    }
+    interface {
+      type            = "bond"
+      name            = "bond0"
+      bond_interfaces = ["gbe0", "gbe1"]
+      mac_address      = "52:54:00:12:34:00"
+      params = {
+        bond-mode      = "active-backup"
+        bond-lacp-rate = "false"
+      }
+      mtu = 1450
+      subnets {
+        type       = "static"
+        address    = "192.168.1.10"
+        netmask    = "255.255.255.0"
+        dns_nameservers = ["192.168.1.11"]
+      }
+    }
+  }
+```

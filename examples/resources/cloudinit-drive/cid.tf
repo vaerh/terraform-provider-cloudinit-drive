@@ -1,7 +1,8 @@
 resource "cloudinit-drive" "vm-test-cloudinit-drive" {
-  drive_type = "nocloud"
+  drive_type = "configdrive2"
   drive_name = "vm-101-cloud-init.iso"
   drive_path = "file://./"
+  iso_maker  = "genisoimage"
 
   hostname = "testhost.fqdn"
 
@@ -48,7 +49,7 @@ resource "cloudinit-drive" "vm-test-cloudinit-drive" {
     path       = "/tmp/aaa/bbb"
   }
 
-  network {
+  network_v2 {
     ethernets {
       match {
         macaddress = "00:11:22:33:44:55"
