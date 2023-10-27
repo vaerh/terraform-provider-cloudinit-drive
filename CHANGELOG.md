@@ -1,3 +1,12 @@
+## [1.2.1](https://github.com/vaerh/terraform-provider-cloudinit-drive/compare/v1.2.0...v1.2.1) (2023-10-27)
+
+
+### Bug Fixes
+
+* Change the read interface ([f0c6b3a](https://github.com/vaerh/terraform-provider-cloudinit-drive/commit/f0c6b3aaf185cd9aa6466c4005c702cbf6e3a0d0))
+* Fix field tag generation ([193d19e](https://github.com/vaerh/terraform-provider-cloudinit-drive/commit/193d19ee379c2290897b1c2d44b5a4f52309b973))
+* Fix network_v1 field names ([ab129af](https://github.com/vaerh/terraform-provider-cloudinit-drive/commit/ab129af512f5310e119b7f0e69f2f37dc85e9597))
+
 ## [1.2.0](https://github.com/vaerh/terraform-provider-cloudinit-drive/compare/v1.1.5...v1.2.0) (2023-10-27)
 
 
