@@ -1,10 +1,11 @@
 package cid
 
 import (
+	"bytes"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"os"
+	"path"
 	"reflect"
 	"testing"
 
@@ -56,11 +57,11 @@ func TestProvider(t *testing.T) {
 
 func CopyIsoForDebug(isoSuffix string) resource.TestCheckFunc {
 	return func(state *terraform.State) error {
-		data, err := ioutil.ReadFile("vm-101-cloud-init." + isoSuffix)
+		data, err := os.ReadFile("vm-101-cloud-init." + isoSuffix)
 		if err != nil {
 			return err
 		}
-		return ioutil.WriteFile("vm-101-cloud-init."+isoSuffix+".iso", data, 0644)
+		return os.WriteFile("vm-101-cloud-init."+isoSuffix+".iso", data, 0644)
 	}
 }
 
@@ -78,7 +79,7 @@ func ImageUserdataEqual(isoSuffix, attrName, yamlName string) resource.TestCheck
 		if err != nil {
 			return err
 		}
-		b, err := GetIsoFile(root, "/openstack/latest/user-data")
+		b, err := getIsoFile(root, "/openstack/latest/user-data")
 		if err != nil {
 			return err
 		}
@@ -135,4 +136,44 @@ resource "cloudinit-drive" "vm-test-cloudinit-drive" {
   network {}
 }
 `, suffix, b)
+}
+
+func getIsoFile(f *iso9660.File, targetFile string) ([]byte, error) {
+	b, _, e := isoSearch(f, targetFile, "/")
+	return b, e
+}
+
+func isoSearch(f *iso9660.File, targetFile, currentPath string) ([]byte, bool, error) {
+	var b []byte
+	var found bool
+
+	if f.IsDir() {
+		children, err := f.GetChildren()
+
+		if err != nil {
+			return nil, found, err
+		}
+
+		for _, c := range children {
+			if b, found, err = isoSearch(c, targetFile, path.Join(currentPath, c.Name())); err != nil {
+				return nil, found, err
+			} else {
+
+				if found {
+					return b, found, nil
+				}
+
+			}
+		}
+	} else if targetFile == currentPath { // it's a file
+		var buf bytes.Buffer
+
+		if _, err := buf.ReadFrom(f.Reader()); err != nil {
+			return nil, found, err
+		}
+
+		return buf.Bytes(), true, nil
+	}
+
+	return b, found, nil
 }

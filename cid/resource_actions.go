@@ -6,7 +6,6 @@ import (
 	"crypto/sha1"
 	"crypto/sha256"
 	"encoding/hex"
-	"encoding/json"
 	"fmt"
 	"io"
 	"net/url"
@@ -14,7 +13,6 @@ import (
 	ospath "path"
 	"strings"
 
-	"github.com/goccy/go-yaml"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/path"
@@ -22,7 +20,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
-	"github.com/vaerh/iso9660"
 )
 
 func (r *cloudInitDriveResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
@@ -154,79 +151,7 @@ func (r *cloudInitDriveResource) ReadCloudInitDrive(ctx context.Context, stateDa
 	}
 	defer img.Close()
 
-	iso, err := iso9660.OpenImage(img)
-	if err != nil {
-		diags.AddAttributeWarning(path.Empty(), err.Error(),
-			"Error reading 'iso' file. The 'iso' file will be re-created.")
-		return
-	}
-
-	cdLabel, err := iso.Label()
-	if err != nil {
-		diags.AddAttributeWarning(path.Empty(), err.Error(),
-			"Error reading 'iso' file. The 'iso' file will be re-created.")
-		return
-	}
-
-	root, err := iso.RootDir()
-	if err != nil {
-		diags.AddAttributeWarning(path.Empty(), err.Error(),
-			"Error reading 'iso' file. The 'iso' file will be re-created.")
-		return
-	}
-
-	var metadataFile string
-	switch cdLabel {
-	case "config-2", "CONFIG-2":
-		metadataFile = "/openstack/latest/meta-data.json"
-	case "cidata", "CIDATA":
-		metadataFile = "/meta-data"
-	case "CONTEXT", "CDROM":
-		// TODO OpenNebula
-	}
-
-	buf, err := GetIsoFile(root, metadataFile)
-	if err != nil {
-		diags.AddAttributeWarning(path.Empty(), err.Error(),
-			"Error reading Metadata file. The 'iso' file will be re-created.")
-		return
-	}
-
-	// Set instance ID.
-	var instanceId string
-	switch cdLabel {
-	case "config-2":
-		var md ConfigDriveMeta
-		err = json.Unmarshal(buf, &md)
-		instanceId = md.Id
-	case "cidata":
-		var md NoCloudMeta
-		err = yaml.Unmarshal(buf, &md)
-		instanceId = md.Id
-	case "CONTEXT":
-		// TODO OpenNebula
-	}
-
-	if err != nil {
-		diags.AddAttributeWarning(path.Empty(), err.Error(),
-			"Error parsing Metadata file. The 'iso' file will be re-created.")
-		return
-	}
-
-	if !stateData.InstanceId.Equal(types.StringValue(instanceId)) {
-		diags.AddAttributeWarning(path.Root("instance_id"), "The instance ID has changed.",
-			"The instance ID does not match the state value. The 'iso' file will be re-created.")
-		return
-	}
-
 	// Checksum.
-	_, err = img.Seek(0, 0)
-
-	if err != nil {
-		diags.AddAttributeWarning(path.Empty(), err.Error(),
-			"Error reading 'iso' file. The 'iso' file will be re-created.")
-		return
-	}
 
 	hash := sha256.New()
 	_, err = io.Copy(hash, img)
@@ -238,9 +163,9 @@ func (r *cloudInitDriveResource) ReadCloudInitDrive(ctx context.Context, stateDa
 	}
 
 	if !stateData.Checksum.Equal(types.StringValue(hex.EncodeToString(hash.Sum(nil)))) {
-		// diags.AddAttributeWarning(path.Root("checksum"), "The checksum of the ISO image has changed.",
-		// 	"The checksum of the ISO file does not match the state value. The 'iso' file will be re-created.")
-		tflog.Info(ctx, "The checksum of the ISO file does not match the state value. The 'iso' file will be re-created.")
+		diags.AddAttributeWarning(path.Root("checksum"), "The checksum of the ISO image has changed.",
+			"The checksum of the ISO file does not match the state value. The 'iso' file will be re-created.")
+		// tflog.Info(ctx, "The checksum of the ISO file does not match the state value. The 'iso' file will be re-created.")
 		return
 	}
 

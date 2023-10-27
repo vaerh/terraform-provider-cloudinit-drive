@@ -1,7 +1,6 @@
 package cid
 
 import (
-	"bytes"
 	"context"
 	"errors"
 	"fmt"
@@ -15,7 +14,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
-	"github.com/vaerh/iso9660"
 )
 
 func LoadEnvVariable(v any, env string) any {
@@ -130,46 +128,6 @@ func DriveOpen(c *SSHClient, uri string, rw bool) (UniversalFile, error) {
 	}
 
 	return nil, errors.New("unknown URI scheme: " + uri)
-}
-
-func GetIsoFile(f *iso9660.File, targetFile string) ([]byte, error) {
-	b, _, e := isoSearch(f, targetFile, "/")
-	return b, e
-}
-
-func isoSearch(f *iso9660.File, targetFile, currentPath string) ([]byte, bool, error) {
-	var b []byte
-	var found bool
-
-	if f.IsDir() {
-		children, err := f.GetChildren()
-
-		if err != nil {
-			return nil, found, err
-		}
-
-		for _, c := range children {
-			if b, found, err = isoSearch(c, targetFile, path.Join(currentPath, c.Name())); err != nil {
-				return nil, found, err
-			} else {
-
-				if found {
-					return b, found, nil
-				}
-
-			}
-		}
-	} else if targetFile == currentPath { // it's a file
-		var buf bytes.Buffer
-
-		if _, err := buf.ReadFrom(f.Reader()); err != nil {
-			return nil, found, err
-		}
-
-		return buf.Bytes(), true, nil
-	}
-
-	return b, found, nil
 }
 
 type fileValidator struct{}
