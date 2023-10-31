@@ -188,9 +188,9 @@ func (r *cloudInitDriveResource) CreateCloudInitDrive(ctx context.Context, resou
 	switch ParseCiDriveType(resourcePlan.DriveType.ValueString()) {
 	case ConfigDrive2:
 		cdLabel = "config-2"
-		files["meta-data"] = "/openstack/latest/meta-data.json"
-		files["user-data"] = "/openstack/latest/user-data"
-		files["vendor-data"] = "/openstack/latest/vendor-data.json"
+		files["meta-data"] = "/openstack/latest/meta_data.json"
+		files["user-data"] = "/openstack/latest/user_data"
+		files["vendor-data"] = "/openstack/latest/vendor_data.json"
 		files["network-data"] = "/content/0000"
 	case NoCloud:
 		cdLabel = "CIDATA"
