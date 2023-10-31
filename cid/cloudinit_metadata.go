@@ -68,7 +68,7 @@ func MakeMetadata(ctx context.Context, planData *cloudInitDriveResourceModel) ([
 			Hostname: host,
 		}
 
-		meta.NetworkConfig.ContentPath = "/content/0000"
+		meta.NetworkConfig.ContentPath = "/openstack/content/0000"
 		if planData.CustomFiles != nil {
 			if value, ok := GetAttribute(planData.CustomFiles.NetworkData); ok {
 				meta.NetworkConfig.ContentPath = value

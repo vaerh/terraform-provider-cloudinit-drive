@@ -47,7 +47,7 @@ func TestProvider(t *testing.T) {
 					// 	"vm-101-cloud-init."+isoSuffix.String(),
 					// 	"/openstack/latest/meta_data.json",
 					// 	`{"uuid":"98208689-b17d-47c7-889f-b0f7ebb06a21","hostname":"testhost.fqdn",`+
-					// 		`"network_config":{"content_path":"/content/0000"}}`,
+					// 		`"network_config":{"content_path":"/openstack/content/0000"}}`,
 					// ),
 				),
 			},

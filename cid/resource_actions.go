@@ -187,11 +187,12 @@ func (r *cloudInitDriveResource) CreateCloudInitDrive(ctx context.Context, resou
 	// The attribute is mandatory and always defined.
 	switch ParseCiDriveType(resourcePlan.DriveType.ValueString()) {
 	case ConfigDrive2:
+		// https://cloudinit.readthedocs.io/en/22.1_a/topics/datasources/configdrive.html#version-2
 		cdLabel = "config-2"
 		files["meta-data"] = "/openstack/latest/meta_data.json"
 		files["user-data"] = "/openstack/latest/user_data"
 		files["vendor-data"] = "/openstack/latest/vendor_data.json"
-		files["network-data"] = "/content/0000"
+		files["network-data"] = "/openstack/content/0000"
 	case NoCloud:
 		cdLabel = "CIDATA"
 		files["meta-data"] = "/meta-data"

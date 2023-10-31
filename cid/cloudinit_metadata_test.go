@@ -62,7 +62,7 @@ func TestMakeMetadata(t *testing.T) {
 					// DriveType:  types.StringValue("opennebula"),
 				},
 			},
-			`{"uuid":"4728a390-08c8-4c8b-91c5-30ffd92b623b","hostname":"hostname","network_config":{"content_path":"/content/0000"}}`,
+			`{"uuid":"4728a390-08c8-4c8b-91c5-30ffd92b623b","hostname":"hostname","network_config":{"content_path":"/openstack/content/0000"}}`,
 			nil,
 		},
 		{
