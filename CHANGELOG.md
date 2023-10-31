@@ -1,3 +1,10 @@
+## [1.2.2](https://github.com/vaerh/terraform-provider-cloudinit-drive/compare/v1.2.1...v1.2.2) (2023-10-31)
+
+
+### Bug Fixes
+
+* CloudBase error ([d0c51ff](https://github.com/vaerh/terraform-provider-cloudinit-drive/commit/d0c51ffae842e2eb2638f4f0ef7f3a0a86678197))
+
 ## [1.2.1](https://github.com/vaerh/terraform-provider-cloudinit-drive/compare/v1.2.0...v1.2.1) (2023-10-27)
 
 
