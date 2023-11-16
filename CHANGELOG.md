@@ -1,3 +1,10 @@
+## [1.2.4](https://github.com/vaerh/terraform-provider-cloudinit-drive/compare/v1.2.3...v1.2.4) (2023-11-16)
+
+
+### Bug Fixes
+
+* CVEs (bump github.com/hashicorp/terraform-plugin-go [#48](https://github.com/vaerh/terraform-provider-cloudinit-drive/issues/48)) ([9e7d981](https://github.com/vaerh/terraform-provider-cloudinit-drive/commit/9e7d981c50a7682b3954a4c535c5cd022b6ab410))
+
 ## [1.2.3](https://github.com/vaerh/terraform-provider-cloudinit-drive/compare/v1.2.2...v1.2.3) (2023-10-31)
 
 
