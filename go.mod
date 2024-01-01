@@ -44,7 +44,7 @@ require (
 
 require (
 	github.com/agext/levenshtein v1.2.3 // indirect
-	github.com/appleboy/easyssh-proxy v1.4.0
+	github.com/appleboy/easyssh-proxy v1.5.0
 	github.com/golang/protobuf v1.5.3 // indirect
 	github.com/google/go-cmp v0.6.0 // indirect
 	github.com/google/uuid v1.5.0
