@@ -22,6 +22,17 @@ apt install acl
 setfacl -m u:cid:rwx /mnt/ocfs/images
 ```
 
+Due to the unstable operation of the module for creating ISO9660 it is necessary to install one external program for creating ISO images:
+
+* genisoimage 
+* mkisofs 
+* hdiutil 
+* oscdimg 
+* xorriso
+
+Or specify `iso_maker = "none"` to get the output directory `drive_path + '/cid-raw/'` containing a set of Cloud-Init files.
+
+
 Terraform configuration (FreeBSD VM):
 ``` hcl
 resource "proxmox_vm_qemu" "test-vm" {
@@ -67,6 +78,7 @@ resource "cloudinit-drive" "vm-test-cloudinit" {
   #  drive_path = "file://./"
   drive_path = "ssh:///mnt/<storage path>/images/${var.vm_id}"
   drive_type = "nocloud"
+  iso_maker  = "genisoimage"
 
   hostname = "vm${var.vm_id}-test"
 
