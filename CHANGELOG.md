@@ -1,3 +1,10 @@
+## [1.3.0](https://github.com/vaerh/terraform-provider-cloudinit-drive/compare/v1.2.4...v1.3.0) (2024-04-05)
+
+
+### Features
+
+* Add `iso_maker = none` option to save CID files without ISO creation ([e3cde36](https://github.com/vaerh/terraform-provider-cloudinit-drive/commit/e3cde36b070cc175d94bdde505014f88d9ed70c3))
+
 ## [1.2.4](https://github.com/vaerh/terraform-provider-cloudinit-drive/compare/v1.2.3...v1.2.4) (2023-11-16)
 
 
