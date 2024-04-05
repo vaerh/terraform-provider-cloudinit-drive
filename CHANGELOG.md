@@ -1,3 +1,11 @@
+## [1.3.1](https://github.com/vaerh/terraform-provider-cloudinit-drive/compare/v1.3.0...v1.3.1) (2024-04-05)
+
+
+### Bug Fixes
+
+* CI - Bump go version from 1.20 to 1.21 ([926be28](https://github.com/vaerh/terraform-provider-cloudinit-drive/commit/926be286792b2f3c426c7e1271968afd8c13ffcc))
+* README for release ([707399d](https://github.com/vaerh/terraform-provider-cloudinit-drive/commit/707399d016686eb22757f5857f6d3cd59dacd656))
+
 ## [1.3.0](https://github.com/vaerh/terraform-provider-cloudinit-drive/compare/v1.2.4...v1.3.0) (2024-04-05)
 
 
