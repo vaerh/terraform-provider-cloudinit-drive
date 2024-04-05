@@ -130,10 +130,11 @@ resource "cloudinit-drive" "vm-test-cloudinit-drive" {
   drive_name = "vm-101-cloud-init.%s"
   drive_path = "file://./"
   drive_type = "configdrive2"
+  iso_maker  = "genisoimage"
 
   %s
 
-  network {}
+   network_v2 {}
 }
 `, suffix, b)
 }

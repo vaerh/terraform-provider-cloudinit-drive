@@ -207,7 +207,7 @@ func (r *cloudInitDriveResource) CreateCloudInitDrive(ctx context.Context, resou
 	}
 
 	// New ISO writer.
-	iso, err := NewISOWriter(resourcePlan.ISOMaker.ValueString())
+	iso, err := NewISOWriter(resourcePlan.ISOMaker.ValueString(), resourcePlan.DrivePath.ValueString())
 
 	if err != nil {
 		diags.AddAttributeError(path.Empty(), err.Error(), "Error creating 'iso' file.")

@@ -6,6 +6,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"strings"
 )
 
 var (
@@ -30,13 +31,19 @@ var (
 
 type Iso struct {
 	isoMaker string
+	isoDir   string
 	files    map[string]io.ReadCloser
 	label    string
 }
 
-func NewISOWriter(isoMakerCommand string) (*Iso, error) {
+func NewISOWriter(isoMakerCommand, isoDir string) (*Iso, error) {
+	if pos := strings.Index(isoDir, "://"); pos > -1 {
+		isoDir = isoDir[pos+3:]
+	}
+
 	return &Iso{
 		isoMaker: isoMakerCommand,
+		isoDir:   isoDir,
 		files:    make(map[string]io.ReadCloser),
 	}, nil
 }
@@ -55,6 +62,34 @@ func (i *Iso) AddFile(data any, filePath string) {
 
 func (i *Iso) SetLabel(label string) {
 	i.label = label
+}
+
+func (i *Iso) fillDir(rootFolder string) (int64, error) {
+	// Creating an ISO structure.
+	var n int64
+
+	for filePath, reader := range i.files {
+		err := os.MkdirAll(filepath.Dir(filepath.Join(rootFolder, filePath)), os.ModePerm)
+		if err != nil {
+			return -1, fmt.Errorf("error creating directory: %s", filePath)
+		}
+
+		dest, err := os.Create(filepath.Join(rootFolder, filePath))
+		if err != nil {
+			return -1, fmt.Errorf("error creating file for copy %s to ISO root", filePath)
+		}
+		defer dest.Close()
+
+		k, err := io.Copy(dest, reader)
+		if err != nil {
+			return -1, fmt.Errorf("error copying %s to ISO root", filePath)
+		}
+		n += k
+
+		reader.Close()
+	}
+
+	return n, nil
 }
 
 func (i *Iso) WriteTo(w io.Writer) (int64, error) {
@@ -78,25 +113,12 @@ func (i *Iso) WriteTo(w io.Writer) (int64, error) {
 	}
 	defer os.RemoveAll(rootFolder)
 
-	// Creating an ISO structure.
-	for filePath, reader := range i.files {
-		err = os.MkdirAll(filepath.Dir(filepath.Join(rootFolder, filePath)), os.ModePerm)
-		if err != nil {
-			return -1, fmt.Errorf("error creating directory: %s", filePath)
-		}
+	if i.isoMaker == "none" {
+		return i.fillDir(filepath.Join(i.isoDir, "cid-raw"))
+	}
 
-		dest, err := os.Create(filepath.Join(rootFolder, filePath))
-		if err != nil {
-			return -1, fmt.Errorf("error creating file for copy %s to ISO root", filePath)
-		}
-		defer dest.Close()
-
-		_, err = io.Copy(dest, reader)
-		if err != nil {
-			return -1, fmt.Errorf("error copying %s to ISO root", filePath)
-		}
-
-		reader.Close()
+	if _, err = i.fillDir(rootFolder); err != nil {
+		return -1, err
 	}
 
 	// The process of creating an ISO file.
