@@ -6,7 +6,7 @@ toolchain go1.22.1
 
 require (
 	github.com/davecgh/go-spew v1.1.1
-	github.com/fatih/color v1.16.0
+	github.com/fatih/color v1.17.0
 	github.com/goccy/go-yaml v1.11.0
 	github.com/hashicorp/terraform-plugin-docs v0.19.2
 	github.com/hashicorp/terraform-plugin-framework v1.8.0
